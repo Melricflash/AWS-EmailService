@@ -1,8 +1,11 @@
 import boto3
 import os
 from dotenv import load_dotenv
+from flask import Flask
 
 load_dotenv()
+
+app = Flask(__name__)
 
 AWS_ACCESS = os.getenv("AWS_ACCESS_KEY")
 AWS_SECRET = os.getenv("AWS_SECRET_KEY")
@@ -26,6 +29,10 @@ ses = boto3.client('ses',
 
 # Change the HTML contents sent from the email
 HTMLBody = "<h1> Hi! This is a test email. </h1>"
+
+@app.route("/")
+def healthCheck():
+    return "<h1> P3 Service Healthy! </h1>"
 
 def p3SESPush():
     while True:
@@ -55,7 +62,7 @@ def p3SESPush():
 
                     # Compose the message using SES Client
                     response = ses.send_email(
-                        Source = SES_TARGET, # Source doesnt work for now so we just send to ourselves
+                        Source = SES_TARGET, # Source doesn't work for now so we just send to ourselves
 
                         Destination = {
                             'ToAddresses': [SES_TARGET]
@@ -93,5 +100,5 @@ def p3SESPush():
                 print(f"An error occurred: {err}")
 
 
-
-p3SESPush()
+if __name__ == '__main__':
+    p3SESPush()
