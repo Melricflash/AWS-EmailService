@@ -2,6 +2,7 @@ import boto3
 import os
 from dotenv import load_dotenv
 from flask import Flask
+import threading
 
 load_dotenv()
 
@@ -30,12 +31,15 @@ ses = boto3.client('ses',
 # Change the HTML contents sent from the email
 HTMLBody = "<h1> Hi! This is a test email. </h1>"
 
+stop_flag = False
+
 @app.route("/")
 def healthCheck():
     return "<h1> P3 Service Healthy! </h1>"
 
 def p3SESPush():
-    while True:
+    global stop_flag
+    while not stop_flag:
             try:
                 # Attempt to read from the queue
                 response = sqs.receive_message(
@@ -99,6 +103,19 @@ def p3SESPush():
             except Exception as err:
                 print(f"An error occurred: {err}")
 
+def background_thread():
+    sqs_thread = threading.Thread(target=p3SESPush, daemon=True)
+    sqs_thread.start()
+    return sqs_thread
+
+bg_thread = background_thread()
+
 
 if __name__ == '__main__':
-    p3SESPush()
+    #p3SESPush()
+    try:
+        app.run(host="0.0.0.0", port=8000)
+    except KeyboardInterrupt:
+        print("Shutting down...")
+        stop_flag = True
+        bg_thread.join()
