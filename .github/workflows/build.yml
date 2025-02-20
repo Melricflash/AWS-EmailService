@@ -26,6 +26,7 @@ jobs:
       - name: Run application tests
         env:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+          p3Queue_URL: ${{ secrets.P3QUEUE_URL }}
         run: |
           pytest --disable-warnings
 

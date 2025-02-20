@@ -13,7 +13,7 @@ def client():
     with app.test_client() as client:
         yield client
 
-# def test_get_health(client):
-#     response = client.get("/")
-#     assert response.status_code == 200
+def test_get_health(client):
+    response = client.get("/")
+    assert response.status_code == 200
     # Do this later
