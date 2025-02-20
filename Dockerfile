@@ -1,5 +1,5 @@
 # Refer to a base image
-FROM python:3.10-bookworm
+FROM python:3.10-slim
 
 # Create a new workspace to put the source code in and other stuff
 WORKDIR /app
