@@ -82,7 +82,7 @@ def p3SESPush():
                                     'Charset': 'UTF-8'
                                 },
                                 'Html': {
-                                    'Data': HTMLBody,
+                                    'Data': description,
                                     'Charset': 'UTF-8'
                                 }
                             }
